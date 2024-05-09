@@ -1,0 +1,99 @@
+body{
+    font-family: "Rajdhani", sans-serif !important;
+    font-weight: 600 !important;
+  
+}
+
+.newlisting{
+    margin-top: -44px;
+}
+
+.editlisting{
+    margin-top: -44px;
+}
+
+.container{
+    /* display: flex; */
+    flex-direction: column;
+    min-height: 100vh;
+    flex: 1;
+}
+.navbar{
+    background-color: white;
+}
+.fa-compass{
+    color: rgb(149, 26, 26);
+    font-size: 2rem;
+}
+.nav-link{
+    color: #222222 !important;
+}
+
+/* footer */
+.f-info-links a{
+    text-decoration: none;
+    color: #222222;
+}
+.f-info-links, .f-info-social{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.f-info-social i{
+    margin-left: 1rem;
+}
+
+.f-info-links a:hover{
+    text-decoration: underline;
+}
+.f-info{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+    height: 8rem;
+    background-color: #ebebeb;
+}
+
+/* card */
+
+.listing-card {
+    border: none !important;
+  
+}
+
+.card-img-top{
+    border-radius: 1rem !important;
+    /* width: 100% !important; */
+    object-fit: cover !important;
+    /* width: 31rem !important; */
+}
+
+.card-body{
+    padding: 0 !important;
+}
+
+.card-text p{
+    font-weight: 400px;
+}
+
+.listing-link{
+    text-decoration: none;
+}
+
+.show-img{
+    height: 30vh;
+}
+
+.btns{
+    display: flex;
+}
+
+
+/* styling for map */
+
+#map{
+    height: 400px;
+    width: 80vh;
+}

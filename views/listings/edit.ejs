@@ -1,0 +1,68 @@
+<% layout("/layouts/boilerplate") %>
+ <br><br>
+    <h2 class="col-5 offset-5 mb-3 editlisting"> Edit Listing </h2>
+    <form method="post" action="/listingmodel/<%= listingEdit._id %>?_method=PUT" class="col-6 offset-3 needs-validation" novalidate enctype="multipart/form-data">   <!-- after submitting the form, the datas will be "post" to the "/listingmodel" route-->
+        <div>
+            <label for="title" class="form-label">Title</label>
+            <input  name="listingKeyUpdate[title]" value="<%= listingEdit.title %>" type="text" class="form-control" required> 
+            <div class="valid-feedback">Looks good!</div>
+        </div>
+        
+        <div>
+            <label for="description" class="form-label mt-3">Description</label>
+            <textarea name="listingKeyUpdate[description]"  cols="20" rows="5" class="form-control" required><%= listingEdit.description %></textarea>
+            <div class="invalid-feedback">Please Enter description</div> 
+        </div>
+        
+
+        
+
+        <!-- <div class="mb-3 mt-3">  
+           <img src="<%= listingEdit.image.url %>" alt=""  height="100px" width="100px"> 
+        </div> -->       <!-- edit image preview. that is when we are going to edit our image, then we can see our existing   image in our edit form itself.-->
+
+
+
+
+        <!-- edit image preview design from upload url of cloudinary-->
+        <div class="mb-3 mt-3">  
+           <img src="<%= originalImageUrl %>" alt="">  <!-- this "originalImageUrl" we have got from listingController.js page of "renderEditForm" middleware. -->
+        </div>
+
+
+        <div>
+            <label for="image" class="form-label mt-3">Upload Image</label>
+            <input  name="listingKeyUpdate[image]" type="file" class="form-control"> 
+            <div class="invalid-feedback">Please Enter image link</div>
+        </div>
+       
+        <div class="row">
+            <div class="col-4">
+                <label for="price" class="form-label mt-3">Price</label>
+                <input  name="listingKeyUpdate[price]" value="<%= listingEdit.price %>" type="number" class="form-control" required> 
+                <div class="invalid-feedback">Please Enter valid price</div>
+            </div>
+            
+            <div class="col-8">
+                <label for="country" class="form-label mt-3">country</label>
+                <input  name="listingKeyUpdate[country]" value="<%= listingEdit.country %>" type="text" class="form-control" required> 
+                <div class="invalid-feedback">Please Enter country name</div>
+            </div>
+        </div>
+       
+        
+        <div>
+            <label for="location" class="form-label mt-3">Location</label>
+            <input  name="listingKeyUpdate[location]" value="<%= listingEdit.country %>" type="text" class="form-control" required>
+            <div class="invalid-feedback">Please Enter location</div>
+        </div>
+         
+
+        <button class="btn btn-dark mt-3 mb-3">Edit</button>
+    </form>
+
+    
+
+
+   
+

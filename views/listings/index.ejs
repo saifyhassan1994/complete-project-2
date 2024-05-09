@@ -1,0 +1,236 @@
+<% layout("/layouts/boilerplate") %>
+
+
+      <style>
+          #filters{
+              display: flex;
+              flex-wrap: wrap;
+              align-items: center;
+          }
+
+          .singleFilter{
+              text-align: center;
+              margin-right: 2rem;
+              margin-top: 1rem;
+              opacity: 0.7;
+          }
+
+          .singleFilter:hover{
+              opacity: 1;
+              cursor: pointer;
+          }
+
+          .singleFilter p {
+              font-size: 0.8rem;
+          }
+
+          .tax-toggle{
+              margin-top: 1.2rem;
+              border: 1px solid black;
+              border-radius: 1rem;
+              height: 3rem;
+              padding: 1rem;
+              display: flex;
+              align-items: center;
+          }
+
+          .tax-info{
+              display: none;
+          }
+
+         
+
+
+      </style>
+
+
+
+      <div id="filters" class="mt-3">
+          <div class="singleFilter">
+              <div> <i class="fa-solid fa-fire"></i> </div> 
+              <p>Trending</p> 
+          </div>
+          <div class="singleFilter">
+              <div> <i class="fa-solid fa-person-booth"></i> </div> 
+              <p>Rooms</p> 
+          </div>
+          <div class="singleFilter">
+              <div> <i class="fa-solid fa-mountain-city"></i> </div> 
+              <p>Iconic Cities</p> 
+          </div>
+          <div class="singleFilter">
+              <div> <i class="fa-solid fa-mountain"></i> </div> 
+              <p>Mountains</p> 
+          </div>
+          <div class="singleFilter">
+              <div> <i class="fa-brands fa-fort-awesome"></i> </div> 
+              <p>Castles</p> 
+          </div>
+          <div class="singleFilter">
+              <div> <i class="fa-solid fa-person-swimming"></i> </div> 
+              <p>Amazing Pools</p> 
+          </div>
+          <div class="singleFilter">
+              <div> <i class="fa-solid fa-fire"></i> </div> 
+              <p>Trending</p> 
+          </div>
+          <div class="singleFilter">
+              <div> <i class="fa-solid fa-person-booth"></i> </div> 
+              <p>Rooms</p> 
+          </div>
+          <div class="singleFilter">
+              <div> <i class="fa-solid fa-mountain-city"></i> </div> 
+              <p>Iconic Cities</p> 
+          </div>
+          <div class="singleFilter">
+              <div> <i class="fa-solid fa-mountain"></i> </div> 
+              <p>Mountains</p> 
+          </div>
+          <div class="singleFilter">
+              <div> <i class="fa-brands fa-fort-awesome"></i> </div> 
+              <p>Castles</p> 
+          </div>
+          <div class="singleFilter">
+              <div> <i class="fa-solid fa-person-swimming"></i> </div> 
+              <p>Amazing Pools</p> 
+          </div>
+          
+          
+        
+          <div class="tax-toggle">
+              <div class="form-check-reverse form-switch">
+                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                <label class="form-check-label" for="flexSwitchCheckDefault">Display Total After Taxes</label>
+              </div>
+          </div>
+         
+      </div>
+
+
+
+
+
+      <div class="row col-10 offset-1">
+        
+      </div>
+     <div class="row col-10 offset-1 row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
+     
+        <% for(let Listingall of allListings) { %> 
+            <a href="/listingmodel/<%= Listingall._id %>" class="listing-link">
+              <div class="card listing-card">
+
+                  <!-- <img src="<%= Listingall.image %>" class="card-img-top" alt="..." height="260rem"> -->
+                   <!-- before uploading image into cloud without "url"-->
+
+                <img src="<%= Listingall.image.url %>" class="card-img-top" alt="..." height="260rem"> <!-- after uploading image into cloud with "url" got from cloudinary, thats why we add "image.url"-->
+
+
+              
+
+                <div class="card-body">
+                  <p class="card-text">
+                    <b><%= Listingall.title %></b> <br>
+                    &#8377; <%= Listingall.price.toLocaleString("en-IN") %> / night
+                    <i class="tax-info"> &nbsp;&nbsp; +18%GST</i>  <!-- First we have hidden this "+18%GST" using hidden property on "tax-info" class. So that we can implement a function on switch that, this "+18%GST" should be enable only if we switchOn and disable if we switchOff using "event Listener"-->
+                  </p>
+                </div>
+               </div>
+              <% } %> 
+            </a>
+    </div>
+   
+
+
+    <!-- we are implementing an event listener to the input of our switch button. This "flexSwitchCheckDefault" is the id of input of switch button-->
+    <script>
+        let taxSwitch = document.getElementById("flexSwitchCheckDefault");
+        taxSwitch.addEventListener("click", () => {
+          let taxInfo = document.getElementsByClassName("tax-info");
+          for(info of taxInfo){  // since tax-info element is applied on all listings, therefore we will use loop
+
+              if(info.style.display != "inline"){  // here we have given the condition that if display of "tax-Info" which is "+18%GST" is not inline or enable, then make it enable or inline on "click". or else if it is inline make it none or disable on "click". 
+                  info.style.display = "inline";
+              } else {
+                info.style.display = "none";
+              }
+              
+          }
+        });
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    <ul>
+        <!-- <% for(let Listingall of allListings) { %>     in index route(app.js) we have stored all the datas into "allListings" -->
+
+        <!-- <li> <a href="/listingmodel/<%= Listingall._id %>"> <%= Listingall.title %> </a></li> -->
+
+        <!-- <li> <a href="/listingmodel/<%= Listingall._id %>"> <img src="<%= Listingall.image %>" alt="" height="300px" width="300px"> </a></li>
+        <li><%= Listingall.title %></li>
+        <li>&#8377; <%= Listingall.price %></li>
+        <% } %> -->
+    </ul>
+
+
+
+    <!-- if only we need list of all the listings based on their title only -->
+    <!-- <ul>
+        <% for(let Listingall of allListings) { %>
+        <li>  <%= Listingall.title %></li>
+        <% } %>
+    </ul> -->
+
+
+    <!-- if only we need list of all the listings based on their image only -->
+     <!-- <ul>
+        <% for(let Listingall of allListings) { %>
+        <li>  <img src="<%= Listingall.image %>" alt="" height="300px" width="300px"></li>
+        <% } %>
+    </ul>  -->
+
+
+
+    <!-- if only we need path on which when we click, it will take us to "show.ejs" page  -->
+    <!-- <ul>
+        <% for(let Listingall of allListings) { %>
+        <li> <a href="/listingmodel/<%= Listingall._id %>"> 1 </a></li>
+        <% } %>
+    </ul> -->
+
+
+
+
+    <!-- <form method="get" action="/listingmodel/new">  // we can use either this method or anchor tag to fetch new form
+        <button>Create new Listing</button>
+    </form> -->
+
+    <!-- <a href="/listingmodel/new">Create new Listing</a>   to fetch new.ejs form -->
+
+

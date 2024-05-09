@@ -1,0 +1,23 @@
+
+
+<% if(successLocal && successLocal.length) { %> <!-- if only "successLocal" exist and also if its length greater than zero, then only show this alert pop up message-->
+
+<div class="alert alert-success col-6 offset-3 alert-dismissible fade show" role="alert">  <!-- add "alert-dismissible fade show" class to create cross(x) button-->
+    <b> <%= successLocal %> </b> 
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>   <!-- create cross(x) button-->
+</div>
+
+<% } %>
+
+
+
+
+
+<% if(errorVariable && errorVariable.length) { %> <!-- if only "errorVariable" exist and also if its length greater than zero, then only show this alert pop up message-->
+
+<div class="alert alert-success col-6 offset-3 alert-dismissible fade show" role="alert">
+    <b> <%= errorVariable %> </b> 
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+<% } %>

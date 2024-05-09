@@ -1,0 +1,263 @@
+<% layout("/layouts/boilerplate") %>
+
+    <script>
+        const mapToken = "<%= process.env.MAP_TOKEN %>";  // this "MAP_TOKEN" we have saved in .env file.
+        const listingMapShowPge = <%- JSON.stringify(listingindividual) %> ;  // here we are saving "listingindividual" inside "listingMapShowPge" variable. we used "JSON.stringify" to eliminate error.
+    </script>
+
+    <div class="row">
+        <div class="col-6 offset-3">
+            <b><%= listingindividual.title %></b>   <!-- "listingindividual" is the variable from "showRoute" in which we had stored all the information of single listing.  -->
+        </div>
+        <div class="col-4 offset-3">
+
+            <div class="card listing-card">
+
+                 <!-- <img src="<%= listingindividual.image %>" class="card-img-top show-img" alt="..." height="260rem"> -->  
+                <!-- before uploading image into cloud without "url"-->
+
+                <img src="<%= listingindividual.image.url %>" class="card-img-top show-img" alt="..." height="260rem"> <!-- after uploading image into cloud with "url" got from cloudinary, thats we add "image.url"-->
+
+               
+
+                <div class="card-body">
+                    <p class="card-text">
+                        
+                        <i>Owned by @<%= listingindividual.ownerListing.username %> </i> <br>  <!-- inside "ownerListing" of "listingschema" we have all the information of "User" of "usershema", and inside "userschema" we have defined "username" . that's how "ownerListing" has aceess of "usershema" -->
+                        &#8377; <%= listingindividual.price.toLocaleString("en-IN") %> <br>
+                            <%= listingindividual.description %> <br>
+                                <%= listingindividual.location %> <br>
+                                    <%= listingindividual.country %>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+<!-- currUser is the variable in which we have stored currently logged in user information as "req.user" inside "app.js" -->
+<!-- this codition defines that if "currUser" exist and also if "id" of loggedIn user(currUser) is same as the "id" of user(ownerListing) who has created this particular listing, then only user can see these "edit" and "delete" button inorder to edit or delete listing.  -->
+
+<% if(currUser && currUser._id.equals(listingindividual.ownerListing._id)) { %>  
+
+    <div class="btns mb-3">
+        <a href="/listingmodel/<%= listingindividual._id %>/edit" class="btn btn-dark col-1 offset-3">Edit</a>
+
+        <form method="post" action="/listingmodel/<%= listingindividual._id %>?_method=DELETE">
+            <button class="btn btn-dark offset-3">Delete</button>
+        </form>
+
+    </div>
+
+<% } %>
+
+
+
+
+
+
+    <!-- <div class="btns mb-3">
+        <a href="/listingmodel/<%= listingindividual._id %>/edit" class="btn btn-dark col-1 offset-3">Edit</a>
+
+        <form method="post" action="/listingmodel/<%= listingindividual._id %>?_method=DELETE">
+            <button class="btn btn-dark offset-3">Delete</button>
+        </form>
+
+    </div> -->
+
+
+
+
+
+
+
+
+
+
+    
+    
+<!-- Review Section
+      
+    Review form   -->
+
+ 
+
+    <div class="col-6 offset-3">
+        <hr>
+        <% if(currUser) { %>  <!--this codition defines that if any user exist or loggrdIn then only he can see this review form to create a review-->
+            <h3>Leave A Review</h3>
+          
+            <form action="/listingmodel/<%= listingindividual._id %>/reviews" method="post" novalidate class="needs-validation">
+                
+                <div class="mb-3 mt-3">
+                <label for="rating" class="form-label">Rating</label> 
+
+                    <!-- this rating design from github. first we will click on "starability-css" from under link "github.com/Lunarlogic/starability".this will take us to the page for different rating design. then we will click on any one of the design and copy the whole code and paste it to the "rating.css" file which we have created inside "css folder" which is inside "public folder".then we have copied the whole "starability-basic" structure code from "github.com/Lunarlogic/starability" link. here we have replaced value of name with "reviewKey[rating]" -->           
+                   <fieldset class="starability-slot"> <!-- we have replaced "starability-basic" with "starability-slot"-->
+                        <input type="radio" id="no-rate" class="input-no-rate" name="reviewKey[rating]" value="0" checked aria-label="No rating." />
+                        <input type="radio" id="first-rate1" name="reviewKey[rating]" value="1" />
+                        <label for="first-rate1" title="Terrible">1 star</label>
+                        <input type="radio" id="first-rate2" name="reviewKey[rating]" value="2" />
+                        <label for="first-rate2" title="Not good">2 stars</label>
+                        <input type="radio" id="first-rate3" name="reviewKey[rating]" value="3" />
+                        <label for="first-rate3" title="Average">3 stars</label>
+                        <input type="radio" id="first-rate4" name="reviewKey[rating]" value="4" />
+                        <label for="first-rate4" title="Very good">4 stars</label>
+                        <input type="radio" id="first-rate5" name="reviewKey[rating]" value="5" />
+                        <label for="first-rate5" title="Amazing">5 stars</label>
+                   </fieldset>
+                </div> 
+               
+  
+                <div class="mb-3 mt-3">
+                    <label for="coment" class="form-label">Comment</label>
+                    <textarea name="reviewKey[comment]" id="Comment" cols="30" rows="5" class="form-control" required></textarea>
+                    <div class="invalid-feedback">please add some comment for reviews</div>
+                </div> 
+                <button class="btn btn-dark">Submit</button>
+
+            </form>
+            <hr>
+        <% } %>
+
+
+       
+
+
+
+
+
+        <!-- Displaying reviews after submitting to review form-->
+
+        
+
+
+        <!-- displaying reviews inside card -->
+
+      <% if(listingindividual.reviewsAll.length > 0) { %>    <!-- this condition defines that,if there is any review exist then only we will show our "All Reviews" section -->
+
+        <div class="row">
+            <p> <b>All Reviews</b> </p>
+            <% for(review of listingindividual.reviewsAll) { %>
+
+                <div class="card col-5 ms-3 mb-3"> 
+                   <div class="card-body">
+
+                        <h5 class="card-title"> @<%= review.ownerReviews.username %> </h5>
+
+                        <p class="starability-result card-text" data-rating="<%= review.rating %>"></p><!--this design from github.we have copied this paragraph from github from under "static rating result" which we can find under the link "github.com/Lunarlogic/starability". this paragraph is related with the above "basic structure" rating design which we have also copied from under "github.com/Lunarlogic/starability" link. here we have added "card-text" into class and also replaced value of "data-rating" with "<%= review.rating %>"-->
+
+                        <p class="card-text"> <%= review.comment %></p>
+
+                       
+                    </div>
+
+                   <!-- delete form for Reviews -->
+
+                   <form action="/listingmodel/<%= listingindividual._id %>/reviews/<%= review._id %>?_method=DELETE" method="post" class="mb-3">
+                        <button class="btn btn-sm btn-dark">Delete</button>
+                   </form>
+
+                </div>
+
+            <% } %>
+        </div>
+
+      <% } %>
+    </div>
+
+
+
+
+
+
+
+<!-- map section -->    
+
+    <div class="col-6 offset-3">  
+            
+        <h3>Where you'll be</h3>
+        <div id="map"></div>  <!-- to display map-->
+
+    </div>
+
+</div>
+   
+
+<!-- for map-->
+
+<script src="/js/map.js"></script>  <!-- this is to access "map.js" file here in show.ejs page-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- <div class="row">
+        <div class="col-1 offset-2">
+            <a href="/listingmodel/<%= listingindividual._id %>/edit" class="btn btn-dark">Edit</a>
+        </div>
+        <div class="col-1">
+            <form method="post" action="/listingmodel/<%= listingindividual._id %>?_method=DELETE">
+                <button class="btn btn-dark">Delete</button>
+            </form>
+        </div>
+       
+    </div> -->
+
+
+
+     <!-- displaying reviews inside ul list -->
+
+        <!-- <ul>
+            <% for(review of listingindividual.reviewsAll) { %>
+                <li> <%= review.comment %> , <%= review.rating %> stars </li>
+            <% } %>
+        </ul> -->
+
+
+
+
+
+
+
+    <!-- <ul>
+                        <li>
+                            <%= listingindividual.description %>
+                        </li>
+                        <li>&#8377; <%= listingindividual.price.toLocaleString("en-IN") %>
+                        </li>
+                        <li>
+                            <%= listingindividual.location %>
+                        </li>
+                        <li>
+                            <%= listingindividual.country %>
+                        </li>
+                    </ul> -->
+
+
+    <!-- this path "/listingmodel/<%= listingindividual._id %>/edit" will fetch edit.ejs form z--> <br><br>
+    <!-- we had stored all the datas of individual listing into "listingindividual" in show route inside app.js-->
