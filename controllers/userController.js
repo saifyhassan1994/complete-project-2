@@ -60,7 +60,7 @@ module.exports.renderLoginForm = (req, res) => {
 module.exports.logIn = async(req, res) => {
 
     req.flash("success", "welcome back to AIRBNB!"); // this message will appear after user login.
-    let redirectUrlnew = res.locals.redirectUrl || "/listingmodel"   // if "redirectUrl" exist then only save this                  "res.locals.redirectUrl" into "redirectUrlnew" variable or else save "/listingmodel" into "redirectUrlnew" variable.
+    let redirectUrlnew = res.locals.redirectUrl2 || "/listingmodel"   // if "redirectUrl" exist then only save this                  "res.locals.redirectUrl" into "redirectUrlnew" variable or else save "/listingmodel" into "redirectUrlnew" variable.
     res.redirect(redirectUrlnew); // if "res.locals.redirectUrl" exist then we will redirect to "redirectUrl" path else we will redirect to "/listingmodel" path.
 
     // how "redirectUrl" understand that which path we are trying to access. it is when we first try to access our "create new listing" page without "logging in" ,then this is where "redirectUrl" will acess "create new listing" path, so as soon as we logged in , "redirectUrl" will redirect us to the "create new listing"  page. same case will happen if we try to edit a listing without logging, then in this case "redirectUrl" will acess the edit path, and soon as we logged in , "redirectUrl" will redirect us to the "edit"  page.
@@ -75,7 +75,7 @@ module.exports.logIn = async(req, res) => {
 
 
 
-// logout form for user
+// logout route for user
 
 module.exports.logOut = (req, res, next) => {
     req.logOut((err) => {       // "req.logout" is a method in passport which will delete our user fro current session which will force user to loggedout.

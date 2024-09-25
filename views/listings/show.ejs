@@ -1,43 +1,166 @@
 <% layout("/layouts/boilerplate") %>
 
-    <script>
-        const mapToken = "<%= process.env.MAP_TOKEN %>";  // this "MAP_TOKEN" we have saved in .env file.
-        const listingMapShowPge = <%- JSON.stringify(listingindividual) %> ;  // here we are saving "listingindividual" inside "listingMapShowPge" variable. we used "JSON.stringify" to eliminate error.
-    </script>
-
-    <div class="row">
+ <div class="row">
         <div class="col-6 offset-3">
-            <b><%= listingindividual.title %></b>   <!-- "listingindividual" is the variable from "showRoute" in which we had stored all the information of single listing.  -->
+            <b><%= listingindividual.title %></b>
         </div>
         <div class="col-4 offset-3">
-
             <div class="card listing-card">
-
-                 <!-- <img src="<%= listingindividual.image %>" class="card-img-top show-img" alt="..." height="260rem"> -->  
-                <!-- before uploading image into cloud without "url"-->
-
-                <img src="<%= listingindividual.image.url %>" class="card-img-top show-img" alt="..." height="260rem"> <!-- after uploading image into cloud with "url" got from cloudinary, thats we add "image.url"-->
-
-               
-
+                <img id="listing-image" src="<%= listingindividual.image.url %>" class="card-img-top show-img" alt="..." height="260rem">
+    
                 <div class="card-body">
                     <p class="card-text">
-                        
-                        <i>Owned by @<%= listingindividual.ownerListing.username %> </i> <br>  <!-- inside "ownerListing" of "listingschema" we have all the information of "User" of "usershema", and inside "userschema" we have defined "username" . that's how "ownerListing" has aceess of "usershema" -->
+                        <i>Owned by @<%= listingindividual.ownerListing.username %> </i> <br>
                         &#8377; <%= listingindividual.price.toLocaleString("en-IN") %> <br>
-                            <%= listingindividual.description %> <br>
-                                <%= listingindividual.location %> <br>
-                                    <%= listingindividual.country %>
+                        <%= listingindividual.description %> <br>
+                        <%= listingindividual.location %> <br>
+                        <%= listingindividual.country %> <br>
                     </p>
+
+
+                    <div class="size-options">
+                        <p>Change Image Size:</p>
+                        <button class="btn btn-outline-secondary" onclick="changeImageSize('s')">S</button>
+                        <button class="btn btn-outline-secondary" onclick="changeImageSize('m')">M</button>
+                        <button class="btn btn-outline-secondary" onclick="changeImageSize('l')">L</button>
+                        <button class="btn btn-outline-secondary" onclick="changeImageSize('xl')">XL</button>
+                        <button class="btn btn-outline-secondary" onclick="changeImageSize('xxl')">XXL</button>
+                    </div> <br>
+            
+                    <div class="color-options">
+                        <button class="btn btn-outline-danger" onclick="changeImageColor('red')">Red</button>
+                        <button class="btn btn-outline-primary" onclick="changeImageColor('blue')">Blue</button>
+                        <button class="btn btn-outline-success" onclick="changeImageColor('green')">Green</button>
+                        <button class="btn btn-outline-warning" onclick="changeImageColor('yellow')">Yellow</button>
+                        <button class="btn btn-outline-secondary" onclick="changeImageColor('purple')">Purple</button>
+                        <button class="btn btn-outline-dark" onclick="changeImageColor('grey')">Grey</button>
+                    </div>
+                    <br>
+
+
+                <!-- Form to add item to cart from show page-->
+                <form action="/listingmodel/cart/<%= listingindividual._id %>" method="POST">
+
+                  
+
+
+                    <input type="hidden" id="selected-color" name="color">
+                    <input type="hidden" id="selected-size" name="size">
+                    <button type="submit" class="btn btn-dark">Add to Cart</button>
+                </form> <br>
+
+
+    
+
                 </div>
             </div>
         </div>
     </div>
+    
+    <script>
+       
+
+        let selectedColor = '';   // script for selecting size and color of image and then add them into cart page
+        let selectedSize = '';      // script for selecting size and color of image and then add them into cart page
 
 
 
+        function changeImageColor(color) {
+
+            selectedColor = color;     // script for selecting size and color of image and then add them into cart page
+            document.getElementById('selected-color').value = color;    // script for selecting size and color of image and then add them into cart page
+
+
+            const img = document.getElementById('listing-image');
+            switch(color) {
+                case 'red':
+                    img.style.filter = 'hue-rotate(0deg) saturate(3)';
+                    break;
+                case 'blue':
+                    img.style.filter = 'hue-rotate(240deg) saturate(3)';
+                    break;
+                case 'green':
+                    img.style.filter = 'hue-rotate(120deg) saturate(3)';
+                    break;
+                case 'yellow':
+                    img.style.filter = 'hue-rotate(60deg) saturate(3)';
+                    break;
+                case 'purple':
+                    img.style.filter = 'hue-rotate(270deg) saturate(3)';
+                    break;
+                case 'grey':
+                    img.style.filter = 'grayscale(100%) brightness(0.7)';
+                    break;
+                default:
+                    img.style.filter = 'none';
+                    break;
+            }
+        }
+        
+        
+    </script>
+    
+    <script>
+    
+      function changeImageSize(size) {
+
+        selectedSize = size;    // script for selecting size and color of image and then add them into cart page
+        document.getElementById('selected-size').value = size;    // script for selecting size and color of image and then add them into cart page
+
+
+
+        const img = document.getElementById('listing-image');
+        switch(size) {
+            case 's':
+                img.style.width = '100px';
+                img.style.height = 'auto';
+                break;
+            case 'm':
+                img.style.width = '200px';
+                img.style.height = 'auto';
+                break;
+            case 'l':
+                img.style.width = '300px';
+                img.style.height = 'auto';
+                break;
+            case 'xl':
+                img.style.width = '400px';
+                img.style.height = 'auto';
+                break;
+            case 'xxl':
+                img.style.width = '500px';
+                img.style.height = 'auto';
+                break;
+            default:
+                img.style.width = 'auto';
+                img.style.height = 'auto';
+                break;
+        }
+    }
+    </script>
+
+
+
+
+
+
+
+
+    
+    
+
+
+
+
+
+
+
+
+
+    
 <!-- currUser is the variable in which we have stored currently logged in user information as "req.user" inside "app.js" -->
 <!-- this codition defines that if "currUser" exist and also if "id" of loggedIn user(currUser) is same as the "id" of user(ownerListing) who has created this particular listing, then only user can see these "edit" and "delete" button inorder to edit or delete listing.  -->
+<!-- inside "ownerListing" we had stored currently logged in user id before creating new listing, therefore now "ownerListing" will have the id of that user who has created this individual listing  -->
 
 <% if(currUser && currUser._id.equals(listingindividual.ownerListing._id)) { %>  
 
@@ -57,15 +180,7 @@
 
 
 
-    <!-- <div class="btns mb-3">
-        <a href="/listingmodel/<%= listingindividual._id %>/edit" class="btn btn-dark col-1 offset-3">Edit</a>
-
-        <form method="post" action="/listingmodel/<%= listingindividual._id %>?_method=DELETE">
-            <button class="btn btn-dark offset-3">Delete</button>
-        </form>
-
-    </div> -->
-
+   
 
 
 
@@ -81,7 +196,7 @@
       
     Review form   -->
 
- 
+ <!-- here this path "/listingmodel/<%= listingindividual._id %>/reviews" defines that we are trying to post or submit our reviews for particular listing or individual listing   -->
 
     <div class="col-6 offset-3">
         <hr>
@@ -173,21 +288,9 @@
 
 
 
-<!-- map section -->    
 
-    <div class="col-6 offset-3">  
-            
-        <h3>Where you'll be</h3>
-        <div id="map"></div>  <!-- to display map-->
-
-    </div>
-
-</div>
    
 
-<!-- for map-->
-
-<script src="/js/map.js"></script>  <!-- this is to access "map.js" file here in show.ejs page-->
 
 
 
@@ -216,48 +319,16 @@
 
 
 
-    <!-- <div class="row">
-        <div class="col-1 offset-2">
-            <a href="/listingmodel/<%= listingindividual._id %>/edit" class="btn btn-dark">Edit</a>
-        </div>
-        <div class="col-1">
-            <form method="post" action="/listingmodel/<%= listingindividual._id %>?_method=DELETE">
-                <button class="btn btn-dark">Delete</button>
-            </form>
-        </div>
-       
-    </div> -->
+
+   
 
 
 
-     <!-- displaying reviews inside ul list -->
-
-        <!-- <ul>
-            <% for(review of listingindividual.reviewsAll) { %>
-                <li> <%= review.comment %> , <%= review.rating %> stars </li>
-            <% } %>
-        </ul> -->
+    
 
 
 
 
 
 
-
-    <!-- <ul>
-                        <li>
-                            <%= listingindividual.description %>
-                        </li>
-                        <li>&#8377; <%= listingindividual.price.toLocaleString("en-IN") %>
-                        </li>
-                        <li>
-                            <%= listingindividual.location %>
-                        </li>
-                        <li>
-                            <%= listingindividual.country %>
-                        </li>
-                    </ul> -->
-
-
-    <!-- this path "/listingmodel/<%= listingindividual._id %>/edit" will fetch edit.ejs form z--> <br><br>
-    <!-- we had stored all the datas of individual listing into "listingindividual" in show route inside app.js-->
+    

@@ -20,6 +20,7 @@ body{
 }
 .navbar{
     background-color: white;
+    margin-bottom: 40px;
 }
 .fa-compass{
     color: rgb(149, 26, 26);
@@ -30,6 +31,9 @@ body{
 }
 
 /* footer */
+.footer2{
+    margin-top: 20px;
+}
 .f-info-links a{
     text-decoration: none;
     color: #222222;
@@ -96,4 +100,8 @@ body{
 #map{
     height: 400px;
     width: 80vh;
+}
+
+#cartsize{
+    margin-top: -18px;
 }

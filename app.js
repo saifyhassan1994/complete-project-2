@@ -1,6 +1,6 @@
-if(process.env.NODE_ENV != "production") { // here we have given the condition that we only want to acess env file in the development stage and not in the production stage as we dont want to upload our "env files datas" when we upload our project on github or any other platform.
+if(process.env.NODE_ENV != "production") { 
 
-   require('dotenv').config();  // inorder to access datas from "env file", we need "dotenv". we have saved "credentials data" of "cloud" in "env file".
+   require('dotenv').config();  
    
 }
 
@@ -9,35 +9,38 @@ const app = express();
 const mongoose = require("mongoose");
 const ExpressError = require("./Errorhandle/ExpressError.js");
 
-const session = require("express-session");  // express-session wiil store the information between user and website as long as the user stays on the website.
-const MongoStore = require('connect-mongo'); // to store mongo-session in Atlas Database
 
-const flash = require("connect-flash");  // this is a part of session to store messages inside session
-const passport = require("passport");  // for login and signup implementation
-const LocalStrategy = require("passport-local"); // for login and signup implementation
+
+const session = require("express-session");  
+const MongoStore = require('connect-mongo'); 
+
+const flash = require("connect-flash");  
+const passport = require("passport"); 
+const LocalStrategy = require("passport-local"); 
 const userSchema = require("./models/user.js");
 
 const path = require("path");
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-app.use(express.urlencoded({extended: true}));     // (urlencoded: to access datas which is inside "req", here urlencoded is a middleware function inside express)
+app.use(express.urlencoded({extended: true}));     
 
 const methodOverride = require("method-override");
 app.use(methodOverride("_method"));
 
-const ejsMate = require("ejs-mate");    //  for boilerplate
-app.engine("ejs", ejsMate);  //  for boilerplate
+const ejsMate = require("ejs-mate");    
+app.engine("ejs", ejsMate); 
 
-app.use(express.static(path.join(__dirname, "/public")));   // to access public folder. (to serve backened static files to the front, here static is a middleware function inside express)
-
-
+app.use(express.static(path.join(__dirname, "/public")));   
 
 
 
-// const MONGO_URL = "mongodb://127.0.0.1:27017/AIRBNB";
-const dbUrl = process.env.ATLASDB_URL
+
+
+ const MONGO_URL = "mongodb://127.0.0.1:27017/AIRBNB";
+// const dbUrl = process.env.ATLASDB_URL
 async function main() {
-    await mongoose.connect(dbUrl);
+    await mongoose.connect(MONGO_URL);
+    // await mongoose.connect(dbUrl);
   }
 
  main()
@@ -53,33 +56,15 @@ async function main() {
 
 
 
-const store = MongoStore.create({     // to store mongo sessions in Atlas Database
-    mongoUrl: dbUrl,  // to store url of Atlas Database
-    crypto: {      // crypto is a function which will encrypt "secret"
-        secret: process.env.SECRET,  
-    },
-    touchAfter: 24 * 3600,   // session will be stored for "one day".
-})
 
-
-
-
-store.on("error", () => {  // to check if there is an array in "MONGO SESSION STORE"
-    console.log("ERROR IN MONGO SESSION STORE", err)
-});
-
-
-
-
-const sessionOptions = {       // session will be autometically atached to every routes we have created.
-    store,  // storing "MongoStore" in sessionOptions.
-    secret: process.env.SECRET,   // this is the secret code for the session we have stored in env file
+const sessionOptions = {       
+    secret: process.env.SECRET,   
     resave: false,             
     saveUninitialized: true,
     cookie: {
-        expires: Date.now() + 7 * 24 * 60 * 60 * 1000,  // this means once we log-in , then expiry date of our session will be one week from the date we logged in. That is only after one week we need to log-in again.
+        expires: Date.now() + 7 * 24 * 60 * 60 * 1000,  
         maxAge: 7 * 24 * 60 * 60 * 1000,
-        httpOnly: true,      // this is for security purpose
+        httpOnly: true,     
     },
 };
 
@@ -102,12 +87,18 @@ passport.deserializeUser(userSchema.deserializeUser()); // unstore user related 
 
 
 
+
+
+
 app.use((req, res, next) => {
     res.locals.successLocal = req.flash("success");
     res.locals.errorVariable = req.flash("error");
-    res.locals.currUser = req.user;  // here all the information related to "current user",  inside "req.user" will be stored in "currUser" variable. 
+    res.locals.currUser = req.user;  // here passport will automatically stored all the information related to "currently loggedIn user",  inside "req.user", which we have stored in "currUser" variable, and then we have saved "currUser" inside "locals" to acess "currUser" anywhere we want.
     next();
 });
+
+
+
 
 
 
@@ -137,6 +128,19 @@ app.use("/", userRoute);
 
 
 
+// send total value of cart to proceed.ejs page
+
+app.post('/listingmodel/proceed', (req, res) => {
+    const finalTotal1 = req.body.finalTotal;
+    res.render('listings/proceed.ejs', { finalTotal1 });
+});
+
+
+
+
+
+
+
 app.all("*", (req, res, next) => {          // this will check for all the routes above and if none of the route match with the route we have tried to find in the browser , then it will throw the error "page not found"
     next(new ExpressError(404, "page not found"));
 });
@@ -146,6 +150,9 @@ app.use((err, req, res, next) => {            // for both wrapAsync and ExpressE
     res.status(statusCode).render("error.ejs", {message});
     // res.status(statusCode).send(message);
 });
+
+
+
 
 app.listen(8080, () =>{
     console.log('server is listning')

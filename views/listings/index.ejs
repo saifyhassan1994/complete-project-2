@@ -24,6 +24,10 @@
               font-size: 0.8rem;
           }
 
+          .singleFilter a {
+              text-decoration: none;
+          }
+
           .tax-toggle{
               margin-top: 1.2rem;
               border: 1px solid black;
@@ -47,28 +51,28 @@
 
       <div id="filters" class="mt-3">
           <div class="singleFilter">
-              <div> <i class="fa-solid fa-fire"></i> </div> 
-              <p>Trending</p> 
+              <div> <a  href="/listingmodel/category/Trending" ><i class="fa-solid fa-fire"></i> <p>Trending</p> </a>  </div> 
+              
           </div>
           <div class="singleFilter">
-              <div> <i class="fa-solid fa-person-booth"></i> </div> 
-              <p>Rooms</p> 
+              <div> <a href="/listingmodel/category/Rooms"> <i class="fa-solid fa-person-booth"></i>  <p>Rooms</p></a></div> 
+              
           </div>
           <div class="singleFilter">
-              <div> <i class="fa-solid fa-mountain-city"></i> </div> 
-              <p>Iconic Cities</p> 
+              <div><a href="/listingmodel/category/Iconic Cities"> <i class="fa-solid fa-mountain-city"></i> <p>Iconic Cities</p>  </a></div> 
+             
           </div>
           <div class="singleFilter">
-              <div> <i class="fa-solid fa-mountain"></i> </div> 
-              <p>Mountains</p> 
+              <div> <a href="/listingmodel/category/Mountains"> <i class="fa-solid fa-mountain"></i>  <p>Mountains</p>  </a></div> 
+             
           </div>
           <div class="singleFilter">
-              <div> <i class="fa-brands fa-fort-awesome"></i> </div> 
-              <p>Castles</p> 
+              <div>  <a href="/listingmodel/category/Castles"><i class="fa-brands fa-fort-awesome"></i><p>Castles</p>  </a> </div> 
+              
           </div>
           <div class="singleFilter">
-              <div> <i class="fa-solid fa-person-swimming"></i> </div> 
-              <p>Amazing Pools</p> 
+              <div> <a href="/listingmodel/category/Amazing Pools"><i class="fa-solid fa-person-swimming"></i> <p>Amazing Pools</p>  </a> </div> 
+             
           </div>
           <div class="singleFilter">
               <div> <i class="fa-solid fa-fire"></i> </div> 
@@ -96,19 +100,22 @@
           </div>
           
           
-        
-          <div class="tax-toggle">
-              <div class="form-check-reverse form-switch">
-                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
-                <label class="form-check-label" for="flexSwitchCheckDefault">Display Total After Taxes</label>
-              </div>
+       
+
+           <!--  TAX SWITCH -->
+
+           <div class="tax-toggle">
+            <div class="form-check-reverse form-switch">
+              <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+              <label class="form-check-label" for="flexSwitchCheckDefault">Display Total in USD</label>
+            </div>
           </div>
-         
-      </div>
+
+       </div>
 
 
 
-
+    <!-- display listings in index page-->
 
       <div class="row col-10 offset-1">
         
@@ -119,44 +126,183 @@
             <a href="/listingmodel/<%= Listingall._id %>" class="listing-link">
               <div class="card listing-card">
 
-                  <!-- <img src="<%= Listingall.image %>" class="card-img-top" alt="..." height="260rem"> -->
-                   <!-- before uploading image into cloud without "url"-->
+                 
 
-                <img src="<%= Listingall.image.url %>" class="card-img-top" alt="..." height="260rem"> <!-- after uploading image into cloud with "url" got from cloudinary, thats why we add "image.url"-->
+                <img src="<%= Listingall.image.url %>" class="card-img-top" alt="..." height="260rem"> 
 
 
               
 
                 <div class="card-body">
+
                   <p class="card-text">
+
                     <b><%= Listingall.title %></b> <br>
-                    &#8377; <%= Listingall.price.toLocaleString("en-IN") %> / night
-                    <i class="tax-info"> &nbsp;&nbsp; +18%GST</i>  <!-- First we have hidden this "+18%GST" using hidden property on "tax-info" class. So that we can implement a function on switch that, this "+18%GST" should be enable only if we switchOn and disable if we switchOff using "event Listener"-->
+                    
+
+                     <!-- converting original price into dollar in the same place of original price-->
+
+                    <!-- <span class="listing-price"><%= Listingall.price.toLocaleString("en-IN") %> </span> / night --> 
+
+
+
+                     <!-- displaying converted original price and its current dollar value in the different place than original price-->
+
+                     <span class="original-price">&#8377; <%= Listingall.price.toLocaleString("en-IN") %> / night</span>
+
+                     <div class="dollar"> 
+                         <span class="listing-price"></span>
+                     </div>
+
+
                   </p>
+
+
+                  <form action="/listingmodel/cart/<%= Listingall._id %>" method="POST">
+                    <button type="submit" class="btn btn-dark addToCartBtn mb-3">Add To Cart</button>
+                  </form>
+
                 </div>
                </div>
-              <% } %> 
             </a>
+         <% } %> 
+            
     </div>
    
 
 
-    <!-- we are implementing an event listener to the input of our switch button. This "flexSwitchCheckDefault" is the id of input of switch button-->
-    <script>
+
+
+
+
+<!-- function to convert indian rupee into current dollar value in the same place of original price while clicking toggle switch-->
+
+
+
+
+
+<!-- function to convert indian rupee into current dollar value in the different place than original price while clicking toggle switch-->
+
+<script>
+    // Replace 'YOUR_API_KEY' with your actual API key from ExchangeRate-API
+    // Your API Key: 60b0217f201db65bf2f1e269, this key i have fetched from ExchangeRate-API
+    const apiKey = '60b0217f201db65bf2f1e269';
+    
+    // Function to fetch the current exchange rate
+    async function fetchExchangeRate() {
+        try {
+            const response = await fetch(`https://v6.exchangerate-api.com/v6/${apiKey}/latest/INR`);
+            const data = await response.json();
+            return data.conversion_rates.USD;
+        } catch (error) {
+            console.error('Error fetching exchange rate:', error);
+            return null;
+        }
+    }
+  
+    // Function to convert INR to USD
+    function convertINRtoUSD(inr, conversionRate) {
+        return (inr * conversionRate).toFixed(2);
+    }
+  
+    // Function to update prices
+    async function updatePrices() {
+        const conversionRate = await fetchExchangeRate();
+        if (!conversionRate) {
+            return;
+        }
+        let originalPriceElements = document.getElementsByClassName("original-price");
+        let listingPriceElements = document.getElementsByClassName("listing-price");
+        for (let i = 0; i < originalPriceElements.length; i++) {
+            let priceINR = parseFloat(originalPriceElements[i].textContent.replace(/[^0-9.-]+/g, ""));
+            if (taxSwitch.checked) {
+                // Convert INR to USD and display in the listing price span
+                let priceUSD = convertINRtoUSD(priceINR, conversionRate);
+                listingPriceElements[i].textContent = `$${priceUSD}`;
+            } else {
+                // Clear the listing price span
+                listingPriceElements[i].textContent = '';
+            }
+        }
+    }
+  
+    // Initial display setup: add a data attribute to store the original INR price
+    document.querySelectorAll('.original-price').forEach(element => {
+        let priceINR = parseFloat(element.textContent.replace(/[^0-9.-]+/g, ""));
+        element.setAttribute('data-price-inr', priceINR);
+    });
+  
+    // Toggle switch event listener
+    let taxSwitch = document.getElementById("flexSwitchCheckDefault");
+    taxSwitch.addEventListener("click", updatePrices);
+</script>
+
+
+
+
+
+
+
+
+
+<!-- function to convert indian rupee into dollar in the same place of original price while clicking toggle switch-->
+
+    <!-- <script>
+        // Conversion rate (example: 1 INR = 0.012 USD)
+        const conversionRate = 0.012;
+      
+        // Function to convert INR to USD
+        function convertINRtoUSD(inr) {
+          return (inr * conversionRate).toFixed(2);
+        }
+      
+        // Toggle switch event listener
         let taxSwitch = document.getElementById("flexSwitchCheckDefault");
         taxSwitch.addEventListener("click", () => {
-          let taxInfo = document.getElementsByClassName("tax-info");
-          for(info of taxInfo){  // since tax-info element is applied on all listings, therefore we will use loop
-
-              if(info.style.display != "inline"){  // here we have given the condition that if display of "tax-Info" which is "+18%GST" is not inline or enable, then make it enable or inline on "click". or else if it is inline make it none or disable on "click". 
-                  info.style.display = "inline";
-              } else {
-                info.style.display = "none";
-              }
-              
+          let priceElements = document.getElementsByClassName("listing-price");
+          for (let priceElement of priceElements) {
+            let priceINR = parseFloat(priceElement.getAttribute("data-price-inr"));
+            if (taxSwitch.checked) {
+              // Convert INR to USD and display
+              let priceUSD = convertINRtoUSD(priceINR);
+              priceElement.textContent = `$${priceUSD}`;
+            } else {
+              // Display the original price in INR
+              priceElement.textContent = `₹${priceINR.toLocaleString("en-IN")}`;
+            }
           }
         });
-    </script>
+      
+        // Initial display setup: add a data attribute to store the original INR price
+        document.querySelectorAll('.listing-price').forEach(element => {
+          let priceINR = parseFloat(element.textContent.replace(/[^0-9.-]+/g, ""));
+          element.setAttribute('data-price-inr', priceINR);
+        });
+    </script> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -187,50 +333,12 @@
 
 
     
-    <ul>
-        <!-- <% for(let Listingall of allListings) { %>     in index route(app.js) we have stored all the datas into "allListings" -->
-
-        <!-- <li> <a href="/listingmodel/<%= Listingall._id %>"> <%= Listingall.title %> </a></li> -->
-
-        <!-- <li> <a href="/listingmodel/<%= Listingall._id %>"> <img src="<%= Listingall.image %>" alt="" height="300px" width="300px"> </a></li>
-        <li><%= Listingall.title %></li>
-        <li>&#8377; <%= Listingall.price %></li>
-        <% } %> -->
-    </ul>
+   
 
 
 
-    <!-- if only we need list of all the listings based on their title only -->
-    <!-- <ul>
-        <% for(let Listingall of allListings) { %>
-        <li>  <%= Listingall.title %></li>
-        <% } %>
-    </ul> -->
-
-
-    <!-- if only we need list of all the listings based on their image only -->
-     <!-- <ul>
-        <% for(let Listingall of allListings) { %>
-        <li>  <img src="<%= Listingall.image %>" alt="" height="300px" width="300px"></li>
-        <% } %>
-    </ul>  -->
+   
 
 
 
-    <!-- if only we need path on which when we click, it will take us to "show.ejs" page  -->
-    <!-- <ul>
-        <% for(let Listingall of allListings) { %>
-        <li> <a href="/listingmodel/<%= Listingall._id %>"> 1 </a></li>
-        <% } %>
-    </ul> -->
-
-
-
-
-    <!-- <form method="get" action="/listingmodel/new">  // we can use either this method or anchor tag to fetch new form
-        <button>Create new Listing</button>
-    </form> -->
-
-    <!-- <a href="/listingmodel/new">Create new Listing</a>   to fetch new.ejs form -->
-
-
+    

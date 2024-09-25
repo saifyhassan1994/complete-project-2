@@ -1,51 +1,228 @@
 <% layout("/layouts/boilerplate") %>
 
    
-    <br><br>
-    <h2 class="col-5 offset-5 mb-3 newlisting">Create A New Listing </h2>
-    <form method="post" action="/listingmodel" class="col-6 offset-3 needs-validation" novalidate enctype="multipart/form-data">   <!-- after submitting the form, the datas will be "post" to the "/listingmodel" route-->
-        <div>
-            <label for="title" class="form-label">Title</label>
-            <input  name="listingKey[title]" placeholder="enter title" type="text" class="form-control" required> 
-            <div class="valid-feedback">Looks good!</div>
-        </div>
-        
-        <div>
-            <label for="description" class="form-label mt-3">Description</label>
-            <textarea name="listingKey[description]" placeholder="enter description" cols="20" rows="5" class="form-control" required></textarea> 
-            <div class="valid-feedback">Great Description</div>
-        </div>
-        
-        <div>
-            <label for="image" class="form-label mt-3">Upload Image</label>
-            <input  name="listingKey[image]" placeholder="enter image" type="file" class="form-control" required> 
-            <div class="invalid-feedback">Image must be Valid</div>
-        </div>
-       
-        <div class="row">
-            <div class="col-4">
-                <label for="price" class="form-label mt-3">Price</label>
-                <input  name="listingKey[price]" placeholder="enter price" type="number"  class="form-control" required> 
-                <div class="invalid-feedback">Please Enter valid price</div>
-            </div>
-            
-            <div class="col-8">
-                <label for="country" class="form-label mt-3">country</label>
-                <input  name="listingKey[country]" placeholder="enter country" type="text" class="form-control" required> 
-                <div class="invalid-feedback">Please Enter country name</div>
-            </div>
-        </div>
-       
-        
-        <div>
-            <label for="location" class="form-label mt-3">Location</label>
-            <input  name="listingKey[location]" placeholder="enter location" type="text" class="form-control" required>
-            <div class="invalid-feedback">Please Enter location</div>
-        </div> <br>
+<br><br>
+<h2 class="col-5 offset-5 mb-3 newlisting">Create A New Listing</h2>
+<form method="post" action="/listingmodel" class="col-6 offset-3 needs-validation" novalidate enctype="multipart/form-data" id="newListingForm">
+    <div>
+        <label for="title" class="form-label">Title</label>
+        <input name="listingKey[title]" placeholder="enter title" type="text" class="form-control" required>
+        <div class="valid-feedback">Looks good!</div>
+    </div>
 
+    <div>
+        <label for="description" class="form-label mt-3">Description</label>
+        <textarea name="listingKey[description]" placeholder="enter description" cols="20" rows="5" class="form-control" required></textarea>
+        <div class="valid-feedback">Great Description</div>
+    </div>
+
+    <div>
+        <label for="image" class="form-label mt-3">Upload Image</label>
+        <input name="listingKey[image]" placeholder="enter image" type="file" class="form-control" required>
+        <div class="invalid-feedback">Image must be Valid</div>
+    </div>
+
+    <div class="row">
+        <div class="col-4">
+            <label for="price" class="form-label mt-3">Price</label>
+            <input name="listingKey[price]" placeholder="enter price" type="number" class="form-control" required>
+            <div class="invalid-feedback">Please Enter valid price</div>
+        </div>
+
+        <div class="col-8">
+            <label for="country" class="form-label mt-3">Country</label>
+            <input name="listingKey[country]" placeholder="enter country" type="text" class="form-control" required>
+            <div class="invalid-feedback">Please Enter country name</div>
+        </div>
+    </div>
+
+    <div>
+        <label for="location" class="form-label mt-3">Location</label>
+        <input name="listingKey[location]" placeholder="enter location" type="text" class="form-control" required>
+        <div class="invalid-feedback">Please Enter location</div>
+    </div>
+
+    <div>
+        <label for="category" class="form-label mt-3">Category</label>
+        <select name="listingKey[category]" class="form-control" required>
+            <option value="">Select a category</option>
+            <option value="Trending">Trending</option>
+            <option value="Rooms">Rooms</option>
+            <option value="Iconic Cities">Iconic Cities</option>
+            <option value="Mountains">Mountains</option>
+            <option value="Castles">Castles</option>
+            <option value="Amazing Pools">Amazing Pools</option>
+        </select>
+        <div class="invalid-feedback">Please select a category</div>
+    </div> <br>
+
+    <button type="submit" class="btn btn-dark mb-3" id="addButton">Add</button>
+</form>
+
+
+
+
+<script>
+    
+
+
+        document.addEventListener('DOMContentLoaded', function() {   //The document object represents the entire HTML document. It's the root node of the DOM (Document Object Model) and provides access to all the elements within the webpage.
+
+//addEventListener:
+//addEventListener is a method available on the document object (as well as other DOM elements). It allows you to attach an event handler to the specified event type. In this case, it's used to listen for the DOMContentLoaded event.
+
+//DOMContentLoaded:
+//DOMContentLoaded is an event that is fired when the initial HTML document has been completely loaded and parsed. This means the document is ready to be manipulated by JavaScript, but it doesn't wait for stylesheets, images, and subframes to finish loading.
+//This event is very useful for ensuring that the JavaScript code that manipulates the DOM only runs after the document has been fully loaded.
+
+//function() { ... }:
+//The second parameter of addEventListener is an anonymous function (a function without a name) defined using the function keyword.
+//This function will be executed once the DOMContentLoaded event is fired, meaning the HTML has been completely loaded and parsed.
+
+
+
+        const form = document.getElementById('newListingForm');
+        const addButton = document.getElementById('addButton');
+
+
+
+        form.addEventListener('input', function() {   //form:
+//This is a reference to the form element that you obtained earlier in the code using const form = document.getElementById('newListingForm');.
+//form now represents the HTML form element with the ID newListingForm.
+
+//addEventListener:
+//addEventListener is a method that attaches an event handler to the specified element.
+//It allows you to listen for a specific event and define a function (event handler) that should be executed when that event occurs.
+
+//'input':
+//The first argument to addEventListener is the type of event to listen for.  In this case, it's the input event.
+//The input event is fired whenever the value of an <input>, <textarea>, or <select> element changes.
+//This event is triggered immediately after the value changes and is ideal for scenarios where you want to respond to changes in form fields as they happen.
+
+//function() { ... }:
+//The second argument to addEventListener is an anonymous function. This function is the event handler that will be executed whenever the input event is fired on the form.
+//This function will contain the code that defines what should happen when the form fields are being interacted with by the user.
+
+           
+
+              const allFilled = Array.from(form.querySelectorAll('input[required], textarea[required], select[required]'))
+                .every(input => input.value.trim() !== '');   // form.querySelectorAll('input[required], textarea[required], select[required]'):
+//This part of the code uses querySelectorAll on the form element to select all required input fields within the form.
+//querySelectorAll is a method that returns a NodeList of elements matching the specified CSS selectors.
+//The CSS selectors used here are input[required], textarea[required], and select[required], which match all <input>, <textarea>, and <select> elements that have the required attribute.
+//This returns a list of all form fields that are marked as required.
+
+//Array.from(...):
+//Array.from is a method that converts array-like or iterable objects into a new array.
+//In this case, it converts the NodeList returned by querySelectorAll into a real array.
+//This allows the use of array methods like every.
+
+//.every(...):
+//every is an array method that tests whether all elements in the array pass the test implemented by the provided function.
+//It returns true if the callback function returns a truthy value for every element in the array; otherwise, it returns false.
+
+//input => input.value.trim() !== '':
+//This is the callback function provided to the every method.
+//input represents each element in the array (each required form field).
+//input.value gets the current value of the form field.
+//trim() is a string method that removes whitespace from both ends of a string.
+//input.value.trim() !== '' checks if the trimmed value of the form field is not an empty string.
+//This ensures that the form field is not empty and contains some user input.
+
+
+
+
+        if (allFilled) {  //This conditional statement changes the background color of the addButton.
+ 
+
+                addButton.style.backgroundColor = 'green';  //If all required fields are filled (allFilled is true), the background color of the addButton is set to green.
+            } else {
+                addButton.style.backgroundColor = '';   //If all required fields are not filled (allFilled is false), the background color of the addButton is reset to its default value (empty string).
+            }
+        });
+    });
+</script>
+
+
+
+
+
+
+
+
+<!-- <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('newListingForm');
+        const addButton = document.getElementById('addButton');
+
+        form.addEventListener('input', function() {
+            let allFilled = true;
+            form.querySelectorAll('input[required], textarea[required], select[required]').forEach(function(input) {
+                if (!input.value.trim()) {
+                    allFilled = false;
+                }
+            });
+
+            if (allFilled) {
+                addButton.style.backgroundColor = 'greenyellow';
+            } else {
+                addButton.style.backgroundColor = '';
+            }
+        });
+    });
+</script> -->
+
+
+
+
+
+<!-- <script>
+    document.getElementById('newListingForm').addEventListener('input', function() {
+        const form = this;
+        const allFilled = Array.from(form.querySelectorAll('input, textarea, select')).every(input => input.value);
+        const addButton = document.getElementById('addButton');
         
-         
+        if (allFilled) {
+            addButton.style.backgroundColor = 'red';
+        } else {
+            addButton.style.backgroundColor = '';
+        }
+    });
+</script> -->
 
-        <button class="btn btn-dark  mb-3">Add</button>
-    </form>
 
+
+
+
+
+
+
+
+
+
+
+
+<!--
+    to change background color of "Add button" into red after filling up the new form to create new listing
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('newListingForm');
+            const addButton = document.getElementById('addButton');
+    
+            form.addEventListener('input', function() {
+                let allFilled = true;
+                form.querySelectorAll('input[required], textarea[required], select[required]').forEach(function(input) {
+                    if (!input.value.trim()) {
+                        allFilled = false;
+                    }
+                });
+    
+                if (allFilled) {
+                    addButton.style.backgroundColor = 'red';
+                } else {
+                    addButton.style.backgroundColor = '';
+                }
+            });
+        });
+    </script> -->

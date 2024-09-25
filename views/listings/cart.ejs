@@ -1,0 +1,249 @@
+
+<% layout("/layouts/boilerplate") %>
+
+<div class="row col-10 offset-1">
+    <div class="col-md-4">
+        <h3>Products</h3>
+    </div>
+    <div class="col-md-1 d-flex align-items-center"></div>
+    <div class="col-md-2 d-flex align-items-center">
+        <h3>Price</h3>
+    </div>
+    <div class="col-md-1 d-flex align-items-center">
+        <h3>Quantity</h3>
+    </div>
+    <div class="col-md-1 d-flex align-items-center"></div>
+    <div class="col-md-1 d-flex align-items-center">
+        <h3>SubTotal</h3>
+    </div>
+    <div class="col-md-1 d-flex align-items-center"></div>
+</div>
+
+
+
+
+<div class="row">
+    <div class="col-10 offset-1">
+        <% if (cartListings.length === 0) { %>
+            <p>Your cart is empty.</p>
+        <% } else { %>
+            <% for(let cartListing of cartListings) { %> 
+                <div class="card listing-card mb-3">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img src="<%= cartListing.image.url %>" class="card-img-top" alt="..." height="100rem">
+                            <b><%= cartListing.title %></b>  <br><br>
+                            <p>Color: <%= cartListing.color %></p>  <!-- for adding into cart from show page--> 
+                            <p id="cartsize">Size: <%= cartListing.size %></p>  <!-- for adding into cart from show page-->
+                        </div>
+                        <div class="col-md-1 d-flex align-items-center"></div>
+                        <div class="col-md-1 d-flex align-items-center">
+                            <div class="card-body">
+
+                                <p class="card-text">
+
+                                   <input type="text" name="price" class="form-control" value =  "&#8377; <%= cartListing.price.toLocaleString("en-IN") %>"  style="width: 75px;" readonly > 
+                                   
+                                </p>
+
+                            </div>
+
+                        </div>
+                        <div class="col-md-1 d-flex align-items-center"></div>
+                        <div class="col-md-1 d-flex align-items-center">
+                            <div class="card-body">
+
+                                <p class="card-text">
+
+                                    <!-- data-price and data-id attributes store the price and the unique ID of the item respectively.
+class="quantity" is used to target these inputs in JavaScript.-->
+
+                                    <input type="number" name="Quantity" class="form-control quantity" min="1" value="1" data-price="<%= cartListing.price %>" data-id="<%= cartListing._id %>" style="width: 75px;">
+
+                                </p>
+
+                            </div>
+                        </div>
+                        <div class="col-md-1 d-flex align-items-center"></div>
+                        <div class="col-md-1 d-flex align-items-center">
+                            <div class="card-body">
+
+                                <p class="card-text">
+
+                                    <!-- Displays the subtotal for the item (price multiplied by quantity).
+Has an id attribute in the format subtotal-<item ID> to uniquely identify each subtotal input.-->
+
+                                <input type="text" name="SubTotal" class="form-control" id="subtotal-<%= cartListing._id %>" value =  "&#8377; <%= cartListing.price.toLocaleString("en-IN") %>"  style="width: 75px;" readonly >
+
+                                </p>
+
+                            </div>
+                        </div>
+                        <div class="col-md-1 d-flex align-items-center"></div>
+                        <div class="col-md-1 d-flex align-items-center">
+                            <div class="card-body">
+                                <p class="card-text">
+                                    <form method="post" action="/listingmodel/cart/<%= cartListing._id %>?_method=DELETE">
+                                        <button class="btn btn-dark offset-3">Delete</button>
+                                    </form>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+        <% } %>
+    </div>
+</div>
+
+<div class="row col-10 offset-1">
+    <div class="col-md-6"></div>
+
+    <div class="col-md-1 d-flex align-items-center">
+
+        <!-- Displays the total cost of all items in the cart.
+id="total" is used to target this input in JavaScript.-->
+
+        <input type="text" name="Total" class="form-control" id="total" style="width: 100px;" readonly >
+
+    </div>
+
+    <!-- <div class="col-md-1"></div> -->
+
+
+    <div class="col-md-4 d-flex align-items-center ms-3">
+
+        <!-- buy now -->
+        <form action="/listingmodel/proceed" method="POST" id="buyNowForm">  
+            <input type="hidden" name="finalTotal" id="finalTotal">
+            <button type="submit" class="btn btn-dark" onclick="setTotalValue()">Buy Now</button>
+        </form>
+
+    </div>
+   
+</div>
+
+
+
+
+
+
+
+
+<script>
+    function updateSubtotal() {
+
+        let total = 0;  //Initializes a variable total to zero.
+
+        document.querySelectorAll('.quantity').forEach(quantityInput => {  //Selects all elements with the class quantity and iterates over them using forEach.
+
+            const price = parseFloat(quantityInput.dataset.price); //price is obtained from the data-price attribute of the current quantity input and converted to a float.
+
+            const quantity = parseInt(quantityInput.value); // quantity is obtained from the current quantity input's value and converted to an integer.
+
+            const id = quantityInput.dataset.id; // id is obtained from the data-id attribute of the current quantity input.
+
+            const subtotal = price * quantity; // subtotal is calculated by multiplying price by quantity.
+
+            document.getElementById(`subtotal-${id}`).value = `₹ ${subtotal.toLocaleString("en-IN")}`; // The subtotal input corresponding to the current item is updated using document.getElementById and setting its value to the formatted subtotal.
+
+            total += subtotal; //The subtotal is added to the total.
+
+        });
+
+        document.getElementById('total').value = `₹ ${total.toLocaleString("en-IN")}`; // After the loop, the total input is updated with the formatted total value.
+
+        //document.getElementById('total').value = total; // After the loop, the total input is updated with the formatted total value.
+    }
+
+
+     // function to access value of "total" input field into "final total" input field while clicking on buy now button
+
+     function setTotalValue() {
+        document.getElementById('finalTotal').value = document.getElementById('total').value.replace(/[^0-9.-]+/g, "");
+    }
+
+
+   
+ 
+    document.querySelectorAll('.quantity').forEach(quantityInput => {  //Adds an input event listener to each quantity input to call updateSubtotal whenever the quantity changes.This ensures the subtotal and total are recalculated dynamically as the user changes the quantity.
+
+        quantityInput.addEventListener('input', updateSubtotal);
+
+    });
+
+
+    window.onload = updateSubtotal;  // //Initial Total Calculation:Calls updateSubtotal when the window loads to ensure the initial totals are calculated correctly based on the default quantities.
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
